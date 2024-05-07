@@ -13,9 +13,10 @@ import Logo from "@/assets/Logo GatherMate 1.png";
 export const LoginPage = () => {
   const user = useSelector((state: any) => state.user.value);
   const dispatch = useDispatch();
+  const apiURL = import.meta.env.VITE_API_URL;
 
   const handleSubmit = (values: any): void => {
-    dispatch(setUser({ name: values.name }));
+    
   };
 
   return (
@@ -35,7 +36,7 @@ export const LoginPage = () => {
                 Faça login no GatherMate
               </p>
               <TextField
-                id="outlined-password-input"
+                id="outlined-user-input"
                 name="email"
                 variant="outlined"
                 label="Usuário"

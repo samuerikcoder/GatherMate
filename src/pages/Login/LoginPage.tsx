@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Formik, Form, Field } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "@/slices/userSlice";
@@ -15,10 +15,10 @@ export const LoginPage = () => {
   const dispatch = useDispatch();
   const apiURL = import.meta.env.VITE_API_URL;
   const formRef = useRef<any>(null);
+  const [isTermsChecked, setIsTermsChecked] = useState(false);
 
   const handleSubmit = async (values: any): Promise<void> => {
     const { email, password } = values;
-    console.log(JSON.stringify({ email, password}));
     try {
       const response = await fetch(`${apiURL}/api/v1/auth/login`, {
         method: "POST",
@@ -29,8 +29,8 @@ export const LoginPage = () => {
       });
 
       const result = await response.json();
-      if(result[0].message === "Sucesso!") {
-        dispatch(setUser(result[0].data.user))
+      if (result[0].message === "Sucesso!") {
+        dispatch(setUser(result[0].data.user));
       }
       console.log(result);
     } catch (error) {
@@ -81,7 +81,11 @@ export const LoginPage = () => {
 
               <FormControlLabel
                 control={
-                  <Checkbox style={{ color: "#333333" }} defaultChecked />
+                  <Checkbox
+                    style={{ color: "#333333" }}
+                    checked={isTermsChecked}
+                    onChange={() => setIsTermsChecked(!isTermsChecked)}
+                  />
                 }
                 label="Eu aceito os termos e condições"
               />
@@ -90,6 +94,7 @@ export const LoginPage = () => {
                 style={{ background: "#333333", color: "#fff", height: "42px" }}
                 variant="contained"
                 type="submit"
+                disabled={!isTermsChecked}
               >
                 Entrar
               </Button>

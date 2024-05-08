@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Formik, Form, Field } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "@/slices/userSlice";
@@ -14,9 +14,28 @@ export const LoginPage = () => {
   const user = useSelector((state: any) => state.user.value);
   const dispatch = useDispatch();
   const apiURL = import.meta.env.VITE_API_URL;
+  const formRef = useRef<any>(null);
 
-  const handleSubmit = (values: any): void => {
-    
+  const handleSubmit = async (values: any): Promise<void> => {
+    const { email, password } = values;
+    console.log(JSON.stringify({ email, password}));
+    try {
+      const response = await fetch(`${apiURL}/api/v1/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const result = await response.json();
+      if(result[0].message === "Sucesso!") {
+        dispatch(setUser(result[0].data.user))
+      }
+      console.log(result);
+    } catch (error) {
+      console.error("Erro ao fazer a requisição POST:", error);
+    }
   };
 
   return (
@@ -27,6 +46,7 @@ export const LoginPage = () => {
           password: "",
         }}
         onSubmit={handleSubmit}
+        innerRef={formRef}
       >
         {({ isSubmitting }) => (
           <Form className="w-full min-h- grid place-items-center">
@@ -36,23 +56,27 @@ export const LoginPage = () => {
                 Faça login no GatherMate
               </p>
               <TextField
-                id="outlined-user-input"
+                id="email"
                 name="email"
                 variant="outlined"
                 label="Usuário"
                 type="text"
                 fullWidth
                 autoComplete="current-user"
+                value={formRef?.current?.values?.email}
+                onChange={formRef?.current?.handleChange}
               />
 
               <TextField
-                id="outlined-password-input"
+                id="password"
                 name="password"
                 variant="outlined"
                 label="Senha"
                 type="password"
                 fullWidth
                 autoComplete="current-password"
+                value={formRef?.current?.values?.password}
+                onChange={formRef?.current?.handleChange}
               />
 
               <FormControlLabel
@@ -65,6 +89,7 @@ export const LoginPage = () => {
               <Button
                 style={{ background: "#333333", color: "#fff" }}
                 variant="contained"
+                type="submit"
               >
                 Entrar
               </Button>

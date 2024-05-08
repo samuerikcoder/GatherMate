@@ -9,12 +9,17 @@ import {
   Button,
 } from "@material-ui/core";
 import Logo from "@/assets/Logo GatherMate 1.png";
+import useSignIn from "react-auth-kit/hooks/useSignIn";
+import { useNavigate } from "react-router-dom";
 
 export const LoginPage = () => {
   const user = useSelector((state: any) => state.user.value);
+  const signIn = useSignIn();
   const dispatch = useDispatch();
   const apiURL = import.meta.env.VITE_API_URL;
   const formRef = useRef<any>(null);
+
+  const navigate = useNavigate();
   const [isTermsChecked, setIsTermsChecked] = useState(false);
 
   const handleSubmit = async (values: any): Promise<void> => {
@@ -29,10 +34,17 @@ export const LoginPage = () => {
       });
 
       const result = await response.json();
+
       if (result[0].message === "Sucesso!") {
         dispatch(setUser(result[0].data.user));
+        signIn({
+          auth: {
+            token: result[0].data.token,
+          },
+          userState: result[0].data.user,
+        });
+        navigate("/eventos");
       }
-      console.log(result);
     } catch (error) {
       console.error("Erro ao fazer a requisição POST:", error);
     }

@@ -87,7 +87,7 @@ export const LoginPage = () => {
               />
 
               <Button
-                style={{ background: "#333333", color: "#fff" }}
+                style={{ background: "#333333", color: "#fff", height: "42px" }}
                 variant="contained"
                 type="submit"
               >

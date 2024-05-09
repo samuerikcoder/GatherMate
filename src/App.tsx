@@ -26,9 +26,7 @@ function App() {
             <Route
               path="/eventos"
               element={
-                <RequireAuth fallbackPath="/login">
                   <EventsPage />
-                </RequireAuth>
               }
             />
             <Route path="/login" element={<LoginPage />} />

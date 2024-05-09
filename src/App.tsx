@@ -23,14 +23,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <Router basename="/app">
           <Routes>
-            <Route
-              path="/eventos"
-              element={
-                <RequireAuth fallbackPath="/login">
-                  <EventsPage />
-                </RequireAuth>
-              }
-            />
+            <Route path="/eventos" element={<EventsPage />} />
             <Route path="/login" element={<LoginPage />} />
           </Routes>
         </Router>
